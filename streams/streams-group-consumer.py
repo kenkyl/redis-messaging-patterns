@@ -3,8 +3,8 @@ import sys
 import time
 
 REDIS_HOST = 'localhost'
-REDIS_PORT = 6379 
-STREAM_NAME = 'process-stream:3'
+REDIS_PORT = 6379
+STREAM_NAME = 'process-stream'
 
 class StreamGroupConsumer:
     def __init__(self, r, consumer_group, consumer_name):
@@ -28,7 +28,7 @@ class StreamGroupConsumer:
             samples = listened[len(listened)-1]
             id_latest, val_latest = samples[len(samples)-1]
             # process the message then continue listening for new messages 
-            print(f'Group Consumer {self.consumer_name} in {self.consumer_group} RECEIVED: {id_latest} => {val_latest}')
+            print(f'Stream {STREAM_NAME} group consumer {self.consumer_name} in {self.consumer_group} RECEIVED: {id_latest} => {val_latest}')
             self.process_message(id_latest, val_latest)
 
     def process_message(self, message_id, message_val):
@@ -36,17 +36,17 @@ class StreamGroupConsumer:
         time.sleep(1)
         ### Group Consumer uses XACK to acknowledge the completion of a message
         self.redis.xack(STREAM_NAME, self.consumer_group, message_id)
-        print(f'Group Consumer {self.consumer_name} in {self.consumer_group} PROCESSED: {message_id} => {message_val}')
+        print(f'Stream {STREAM_NAME} group consumer {self.consumer_name} in {self.consumer_group} PROCESSED: {message_id} => {message_val}')
 
 
 def main():
     # Use command line arguments to add new groups and consumers (defaults are 1 and 1)
     group = 1
     consumer = 1
-    if (len(sys.argv) > 1):
-        consumer = sys.argv[2]
-    if (len(sys.argv) > 1):
-        group = sys.argv[1]
+    if (len(sys.argv) > 2):
+        consumer = sys.argv[3]
+    if (len(sys.argv) > 2):
+        group = sys.argv[2]
     
     # Create a new group consumer and start consuming new items on the stream 
     r = redis.StrictRedis(REDIS_HOST, REDIS_PORT, charset="utf-8", decode_responses=True)
@@ -55,4 +55,8 @@ def main():
     print('done consuming!')
 
 if __name__ == "__main__":
+    stream_num = '1'
+    if (len(sys.argv) > 1):
+        stream_num = str(sys.argv[1])
+    STREAM_NAME = f'{STREAM_NAME}:{stream_num}'
     main()    

@@ -1,10 +1,11 @@
 import redis
 import random
 import time
+import sys
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379 
-STREAM_NAME = 'process-stream:3'
+STREAM_NAME = 'process-stream'
  
 def main(): 
     r = redis.StrictRedis(REDIS_HOST, REDIS_PORT, charset="utf-8", decode_responses=True)
@@ -22,4 +23,8 @@ def main():
         time.sleep(3)
 
 if __name__ == "__main__":
+    stream_num = '1'
+    if (len(sys.argv) > 1):
+        stream_num = str(sys.argv[1])
+    STREAM_NAME = f'{STREAM_NAME}:{stream_num}'
     main()    
