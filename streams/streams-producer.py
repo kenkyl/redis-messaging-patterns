@@ -16,7 +16,7 @@ def main():
         num = random.randint(0,100)
         message = { 'pid': pid, 'completion-value': num}
 
-        ### Publisher uses PUBLISH to send a message to Subscribers on the Channel ###
+        ### Publisher uses XADD to send a message to Subscribers on the Channel ###
         res = r.xadd(STREAM_NAME, message)
 
         print(f'Streams Producer sent \"{message}\" to stream {STREAM_NAME}')
