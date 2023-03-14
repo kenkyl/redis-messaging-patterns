@@ -43,10 +43,10 @@ def main():
     # Use command line arguments to add new groups and consumers (defaults are 1 and 1)
     group = 1
     consumer = 1
+    if (len(sys.argv) > 3):
+        consumer = sys.argv[3]
     if (len(sys.argv) > 2):
-        consumer = sys.argv[2]
-    if (len(sys.argv) > 2):
-        group = sys.argv[1]
+        group = sys.argv[2]
     
     # Create a new group consumer and start consuming new items on the stream 
     r = redis.StrictRedis(REDIS_HOST, REDIS_PORT, charset="utf-8", decode_responses=True)
@@ -55,6 +55,7 @@ def main():
     print('done consuming!')
 
 if __name__ == "__main__":
+    # Arguments: python streams-group-consumer.py <STREAM-NUM> <GROUP-NUM> <CONSUMER-NUM>
     stream_num = '1'
     if (len(sys.argv) > 1):
         stream_num = str(sys.argv[1])
