@@ -44,9 +44,9 @@ def main():
     group = 1
     consumer = 1
     if (len(sys.argv) > 2):
-        consumer = sys.argv[3]
+        consumer = sys.argv[2]
     if (len(sys.argv) > 2):
-        group = sys.argv[2]
+        group = sys.argv[1]
     
     # Create a new group consumer and start consuming new items on the stream 
     r = redis.StrictRedis(REDIS_HOST, REDIS_PORT, charset="utf-8", decode_responses=True)
